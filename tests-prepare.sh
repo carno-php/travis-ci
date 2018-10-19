@@ -78,8 +78,8 @@ alias composer.g='composer global'
 
 # composer global bins
 
-which phpunit || composer.g require phpunit/phpunit "~7@stable"
-which php-coveralls || composer.g require php-coveralls/php-coveralls "~2@stable"
+which phpunit && phpunit --version | grep "7.3" || composer.g require phpunit/phpunit "7.3.x"
+which php-coveralls || composer.g require php-coveralls/php-coveralls "2.1.x"
 
 # extensions
 if dpkg -l libhiredis-dev; then
@@ -88,7 +88,7 @@ else
   SW_CONF="\n\nyes\n\n\nyes\n\n"
 fi
 
-tpecl swoole-2.2.0 swoole.so ${SW_CONF}
+tpecl swoole-4.2.2 swoole.so ${SW_CONF}
 tpecl protobuf-3.6.1 protobuf.so
 tpecl apcu-5.1.12 apcu.so
-tpecl ast-0.1.6 ast.so
+tpecl ast-0.1.7 ast.so
