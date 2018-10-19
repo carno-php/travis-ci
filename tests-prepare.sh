@@ -71,7 +71,7 @@ shopt -s expand_aliases
 
 # composer aliases
 
-export PATH="$PATH:$HOME/.composer/vendor/bin"
+export PATH="$HOME/.composer/vendor/bin:$PATH"
 
 alias composer='composer --no-progress --no-suggest --ansi'
 alias composer.g='composer global'
