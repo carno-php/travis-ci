@@ -88,7 +88,7 @@ else
   SW_CONF="\n\nyes\n\n\nyes\n\n"
 fi
 
-tpecl swoole-4.2.2 swoole.so ${SW_CONF}
+tpecl swoole-4.2.1 swoole.so ${SW_CONF}
 tpecl protobuf-3.6.1 protobuf.so
 tpecl apcu-5.1.12 apcu.so
 tpecl ast-0.1.7 ast.so
