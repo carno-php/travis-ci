@@ -61,9 +61,14 @@ testing () {
 export -f testing
 
 coveralls () {
-    tfold "Coveralls submit" php-coveralls -x coverage-clover.xml -o coveralls.io.json -v
+    tfold "Coveralls submit" php-coveralls -x 'coverage*.xml' -o coveralls.io.json -v
 }
 export -f coveralls
+
+codecov () {
+    tfold "Codecov submit" bash <(curl -s https://codecov.io/bash)
+}
+export -f codecov
 
 # features setup
 
