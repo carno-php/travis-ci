@@ -93,7 +93,12 @@ else
   SW_CONF="\n\nyes\n\n\nyes\n\n"
 fi
 
-tpecl swoole-1.10.5 swoole.so ${SW_CONF}
+SW_VERSION="1.10.5"
+if [[ "$PHP_V" == "7.3" ]]; then
+    SW_VERSION="4.2.12"
+fi
+
+tpecl swoole-${SW_VERSION} swoole.so ${SW_CONF}
 tpecl protobuf-3.6.1 protobuf.so
-tpecl apcu-5.1.12 apcu.so
-tpecl ast-0.1.7 ast.so
+tpecl apcu-5.1.16 apcu.so
+tpecl ast-1.0.0 ast.so
