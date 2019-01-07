@@ -96,6 +96,7 @@ fi
 SW_VERSION="1.10.5"
 if [[ "$PHP_V" == "7.3" ]]; then
     SW_VERSION="4.2.12"
+    SW_CONF="\nyes\n\nyes\n\n"
 fi
 
 tpecl swoole-${SW_VERSION} swoole.so ${SW_CONF}
