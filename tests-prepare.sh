@@ -93,6 +93,7 @@ else
   SW_CONF="\n\nyes\n\n\nyes\n\n"
 fi
 
+# swoole 4.x with 7.3
 SW_VERSION="1.10.5"
 if [[ "$PHP_V" == "7.3" ]]; then
     SW_VERSION="4.2.12"
@@ -100,6 +101,11 @@ if [[ "$PHP_V" == "7.3" ]]; then
 fi
 
 tpecl swoole-${SW_VERSION} swoole.so ${SW_CONF}
-tpecl protobuf-3.6.1 protobuf.so
+
+# TODO protobuf with 7.3 crashed
+if [[ "$PHP_V" == "7.2" ]]; then
+    tpecl protobuf-3.6.1 protobuf.so
+fi
+
 tpecl apcu-5.1.16 apcu.so
 tpecl ast-1.0.0 ast.so
