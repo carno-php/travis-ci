@@ -77,6 +77,9 @@ swoole_ext() {
     if [[ `cache_ext ${ext}` == "missing" ]]; then
         wget -qO- https://github.com/swoole/swoole-src/archive/v${ver}.tar.gz | tar xz -C /tmp
         cd ${tmp}
+        if [[ -e "swoole_coroutine.cc" ]]; then
+            sed -i '/Xdebug/d' swoole_coroutine.cc
+        fi
         phpize && ./configure ${cfg} && \
         make -j $(nproc) && make install
         cache_ext ${ext}
