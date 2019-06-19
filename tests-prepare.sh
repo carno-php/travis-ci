@@ -147,7 +147,13 @@ EV_ast="1.0.1"
 
 # swoole
 SW_VER=$([[ "$PHP_V" == "7.3" ]] && echo "$EV_swoole4" || echo "$EV_swoole1")
-SW_FLAGS="--enable-openssl"
+SW_FLAGS="--enable-openssl --enable-mysqlnd"
+
+if [[ "$PHP_V" != "7.3" ]]; then
+    if dpkg -l libhiredis-dev; then
+        SW_FLAGS="$SW_FLAGS --enable-async-redis"
+    fi
+fi
 
 tfold "Install swoole core <$SW_VER>" "swoole_ext $SW_VER $SW_FLAGS"
 
