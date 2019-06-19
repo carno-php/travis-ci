@@ -127,15 +127,17 @@ shopt -s expand_aliases
 
 export PATH="$HOME/.composer/vendor/bin:$PATH"
 
-alias composer='composer --no-progress --no-suggest --ansi'
-alias composer.g='composer global'
+composer_g() {
+    composer global $@
+}
+export -f composer_g
 
 # composer speedup
-tfold "Installing <hirak.prestissimo>" "composer.g show hirak/prestissimo || composer.g require hirak/prestissimo"
+tfold "Installing <hirak.prestissimo>" "composer_g show hirak/prestissimo || composer_g require hirak/prestissimo"
 
 # composer global bins
-which phpunit && phpunit --version | grep "7.3" || tfold "Installing <phpunit>" composer.g require phpunit/phpunit "7.3.x"
-which php-coveralls || tfold "Installing <coveralls>" composer.g require php-coveralls/php-coveralls "2.1.x"
+which phpunit && phpunit --version | grep "7.3" || tfold "Installing <phpunit>" composer_g require phpunit/phpunit "7.3.x"
+which php-coveralls || tfold "Installing <coveralls>" composer_g require php-coveralls/php-coveralls "2.1.x"
 
 # ext versions
 EV_swoole1="1.10.5"
