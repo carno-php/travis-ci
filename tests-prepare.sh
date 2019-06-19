@@ -76,7 +76,7 @@ swoole_async() {
         wget -qO- https://github.com/swoole/ext-async/archive/v${ver}.tar.gz | tar xz -C /tmp
         cd ${tmp} && \
         phpize && \
-        ./confiugre && \
+        ./configure && \
         make -j $(nproc) && \
         make install
         cache_ext ${ext}
