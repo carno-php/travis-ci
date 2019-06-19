@@ -54,12 +54,13 @@ cache_ext() {
     local ext_cache=~/.php-ext/$(basename ${ext_dir})/${ext_file}
     local ext_origin=${ext_dir}/${ext_file}
 
-    if [[ -e "$ext_cache/$ext_file" ]]; then
-        echo extension = "$ext_cache/$ext_file" >> ${PHP_C}
+    if [[ -e ${ext_cache} ]]; then
+        echo extension = "$ext_cache" >> ${PHP_C}
     else
-        mkdir -p ${ext_cache}
+        mkdir -p $(dirname ${ext_cache})
         if [[ -e ${ext_origin} ]]; then
-            cp ${ext_origin} ${ext_cache}
+            cp ${ext_origin} ${ext_cache} && \
+            echo extension = "$ext_cache" >> ${PHP_C}
         else
             echo "missing"
         fi
