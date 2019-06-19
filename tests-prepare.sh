@@ -67,6 +67,23 @@ cache_ext() {
 }
 export -f cache_ext
 
+swoole_ext() {
+    local ver=$1
+    local cfg=$2
+    local ext="swoole.so"
+    local tmp="/tmp/swoole-src-${ver}"
+
+    if [[ `cache_ext ${ext}` == "missing" ]]; then
+        wget -qO- https://github.com/swoole/swoole-src/archive/v${ver}.tar.gz | tar xz -C /tmp
+        cd ${tmp}
+        phpize && ./configure ${cfg} && \
+        make -j $(nproc) && make install
+        cache_ext ${ext}
+        cd -
+    fi
+}
+export -f swoole_ext
+
 swoole_async() {
     local ver=$1
     local ext="swoole_async.so"
@@ -116,19 +133,12 @@ composer.g show hirak/prestissimo || composer.g require hirak/prestissimo
 which phpunit && phpunit --version | grep "7.3" || composer.g require phpunit/phpunit "7.3.x"
 which php-coveralls || composer.g require php-coveralls/php-coveralls "2.1.x"
 
-# extensions
-if dpkg -l libhiredis-dev; then
-  SW_CONF="\n\nyes\n\nyes\nyes\n\n"
-else
-  SW_CONF="\n\nyes\n\n\nyes\n\n"
-fi
-
 # swoole versions
 if [[ "$PHP_V" == "7.3" ]]; then
-    tpecl swoole-4.3.3 swoole.so "\nyes\n\nyes\n\n"
+    swoole_ext 4.3.3
     swoole_async 4.3.3
 else
-    tpecl swoole-1.10.5 swoole.so ${SW_CONF}
+    swoole_ext 1.10.5
 fi
 
 tpecl protobuf-3.8.0 protobuf.so
