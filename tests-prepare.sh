@@ -73,7 +73,7 @@ swoole_async() {
     local tmp="/tmp/ext-async-${ver}"
 
     if [[ `cache_ext ${ext}` == "missing" ]]; then
-        wget -qO- https://github.com/swoole/ext-async/archive/v${ver}.zip | unzip -d /tmp - && \
+        wget -qO- https://github.com/swoole/ext-async/archive/v${ver}.zip | unzip -d /tmp -
         cd ${tmp} && \
         phpize && \
         ./confiugre && \
@@ -110,8 +110,10 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 alias composer='composer --no-progress --no-suggest --ansi'
 alias composer.g='composer global'
 
-# composer global bins
+# composer speedup
+composer.g show hirak/prestissimo -q || composer.g require hirak/prestissimo
 
+# composer global bins
 which phpunit && phpunit --version | grep "7.3" || composer.g require phpunit/phpunit "7.3.x"
 which php-coveralls || composer.g require php-coveralls/php-coveralls "2.1.x"
 
