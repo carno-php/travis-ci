@@ -137,15 +137,25 @@ composer.g show hirak/prestissimo || composer.g require hirak/prestissimo
 which phpunit && phpunit --version | grep "7.3" || composer.g require phpunit/phpunit "7.3.x"
 which php-coveralls || composer.g require php-coveralls/php-coveralls "2.1.x"
 
-# swoole versions
+# ext versions
+EV_swoole1="1.10.5"
+EV_swoole4="4.3.3"
+EV_sw_async="4.3.3"
+EV_protobuf="3.8.0"
+EV_apcu="5.1.17"
+EV_ast="1.0.1"
+
+# swoole
+SW_VER=$([[ "$PHP_V" == "7.3" ]] && echo "$EV_swoole4" || echo "$EV_swoole1")
 SW_FLAGS="--enable-openssl"
+
+tfold "Install swoole core <$SW_VER>" "swoole_ext $SW_VER $SW_FLAGS"
+
 if [[ "$PHP_V" == "7.3" ]]; then
-    swoole_ext 4.3.3 ${SW_FLAGS}
-    swoole_async 4.3.3
-else
-    swoole_ext 1.10.5 ${SW_FLAGS}
+    tfold "Install swoole async <$EV_sw_async>" "swoole_async $EV_sw_async"
 fi
 
-tpecl protobuf-3.8.0 protobuf.so
-tpecl apcu-5.1.17 apcu.so
-tpecl ast-1.0.1 ast.so
+# extensions
+tpecl protobuf-${EV_protobuf} protobuf.so
+tpecl apcu-${EV_apcu} apcu.so
+tpecl ast-${EV_ast} ast.so
