@@ -70,7 +70,7 @@ export -f cache_ext
 
 swoole_ext() {
     local ver=$1
-    local cfg=$2
+    local cfg=${@:2}
     local ext="swoole.so"
     local tmp="/tmp/swoole-src-${ver}"
 
@@ -131,11 +131,11 @@ alias composer='composer --no-progress --no-suggest --ansi'
 alias composer.g='composer global'
 
 # composer speedup
-composer.g show hirak/prestissimo || composer.g require hirak/prestissimo
+tfold "Installing <hirak.prestissimo>" "composer.g show hirak/prestissimo || composer.g require hirak/prestissimo"
 
 # composer global bins
-which phpunit && phpunit --version | grep "7.3" || composer.g require phpunit/phpunit "7.3.x"
-which php-coveralls || composer.g require php-coveralls/php-coveralls "2.1.x"
+which phpunit && phpunit --version | grep "7.3" || tfold "Installing <phpunit>" composer.g require phpunit/phpunit "7.3.x"
+which php-coveralls || tfold "Installing <coveralls>" composer.g require php-coveralls/php-coveralls "2.1.x"
 
 # ext versions
 EV_swoole1="1.10.5"
