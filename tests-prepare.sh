@@ -55,12 +55,12 @@ cache_ext() {
     local ext_origin=${ext_dir}/${ext_file}
 
     if [[ -e ${ext_cache} ]]; then
-        echo extension = "$ext_cache" >> ${PHP_C}
+        php --ri ${ext_file%.*} || echo extension = "$ext_cache" >> ${PHP_C}
     else
         mkdir -p $(dirname ${ext_cache})
         if [[ -e ${ext_origin} ]]; then
             cp ${ext_origin} ${ext_cache} && \
-            echo extension = "$ext_cache" >> ${PHP_C}
+            php --ri ${ext_file%.*} || echo extension = "$ext_cache" >> ${PHP_C}
         else
             echo "missing"
         fi
@@ -135,11 +135,12 @@ which phpunit && phpunit --version | grep "7.3" || composer.g require phpunit/ph
 which php-coveralls || composer.g require php-coveralls/php-coveralls "2.1.x"
 
 # swoole versions
+SW_FLAGS="--enable-openssl"
 if [[ "$PHP_V" == "7.3" ]]; then
-    swoole_ext 4.3.3
+    swoole_ext 4.3.3 ${SW_FLAGS}
     swoole_async 4.3.3
 else
-    swoole_ext 1.10.5
+    swoole_ext 1.10.5 ${SW_FLAGS}
 fi
 
 tpecl protobuf-3.8.0 protobuf.so
