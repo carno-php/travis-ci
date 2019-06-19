@@ -2,6 +2,7 @@
 
 # global vars
 export PHP_V=$TRAVIS_PHP_VERSION
+export PHP_C=~/.phpenv/versions/${PHP_V}/etc/conf.d/carno.ini
 
 # functions
 
@@ -39,21 +40,49 @@ tfold () {
 export -f tfold
 
 tpecl () {
-    local ext_name=$1
-    local ext_file=$2
-    local php_ini=~/.phpenv/versions/$PHP_V/etc/conf.d/carno.ini
-    local ext_dir=$(php -r "echo ini_get('extension_dir');")
-    local ext_cache=~/.php-ext/$(basename $ext_dir)/$ext_name
-    if [[ -e $ext_cache/$ext_file ]]; then
-        echo extension = $ext_cache/$ext_file >> $php_ini
-    else
+    if [[ `cache_ext $2` == "missing" ]]; then
+        tfold "Install EXT <$1>" "printf \"$3\" | pecl install -f $1"
         rm ~/.pearrc /tmp/pear 2>/dev/null || true
-        mkdir -p $ext_cache
-        tfold "Install EXT <$ext_name>" "printf \"$3\" | pecl install -f $ext_name"
-        cp $ext_dir/$ext_file $ext_cache
+        cache_ext $2
     fi
 }
 export -f tpecl
+
+cache_ext() {
+    local ext_dir=$(php -r "echo ini_get('extension_dir');")
+    local ext_file=$1
+    local ext_cache=~/.php-ext/$(basename ${ext_dir})/${ext_file}
+    local ext_origin=${ext_dir}/${ext_file}
+
+    if [[ -e "$ext_cache/$ext_file" ]]; then
+        echo extension = "$ext_cache/$ext_file" >> ${PHP_C}
+    else
+        mkdir -p ${ext_cache}
+        if [[ -e ${ext_origin} ]]; then
+            cp ${ext_origin} ${ext_cache}
+        else
+            echo "missing"
+        fi
+    fi
+}
+export -f cache_ext
+
+swoole_async() {
+    local ver=$1
+    local ext="swoole_async.so"
+    local tmp="/tmp/ext-async-${ver}"
+
+    if [[ `cache_ext ${ext}` == "missing" ]]; then
+        wget -qO- https://github.com/swoole/ext-async/archive/v${ver}.zip | unzip -d /tmp - && \
+        cd ${tmp} && \
+        phpize && \
+        ./confiugre && \
+        make -j $(nproc) && \
+        make install
+        cache_ext ${ext}
+    fi
+}
+export -f swoole_async
 
 testing () {
     tfold "Running TESTS" phpunit
@@ -93,19 +122,14 @@ else
   SW_CONF="\n\nyes\n\n\nyes\n\n"
 fi
 
-# swoole 4.x with 7.3
-SW_VERSION="1.10.5"
+# swoole versions
 if [[ "$PHP_V" == "7.3" ]]; then
-    SW_VERSION="4.2.12"
-    SW_CONF="\nyes\n\nyes\n\n"
+    tpecl swoole-4.3.3 swoole.so "\nyes\n\nyes\n\n"
+    swoole_async 4.3.3
+else
+    tpecl swoole-1.10.5 swoole.so ${SW_CONF}
 fi
 
-tpecl swoole-${SW_VERSION} swoole.so ${SW_CONF}
-
-# TODO protobuf with 7.3 crashed
-if [[ "$PHP_V" == "7.2" ]]; then
-    tpecl protobuf-3.6.1 protobuf.so
-fi
-
-tpecl apcu-5.1.16 apcu.so
-tpecl ast-1.0.0 ast.so
+tpecl protobuf-3.8.0 protobuf.so
+tpecl apcu-5.1.17 apcu.so
+tpecl ast-1.0.1 ast.so
