@@ -74,12 +74,11 @@ swoole_async() {
 
     if [[ `cache_ext ${ext}` == "missing" ]]; then
         wget -qO- https://github.com/swoole/ext-async/archive/v${ver}.tar.gz | tar xz -C /tmp
-        cd ${tmp} && \
-        phpize && \
-        ./configure && \
-        make -j $(nproc) && \
-        make install
+        cd ${tmp}
+        phpize && ./configure && \
+        make -j $(nproc) && make install
         cache_ext ${ext}
+        cd -
     fi
 }
 export -f swoole_async
