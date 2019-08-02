@@ -141,11 +141,11 @@ which php-coveralls || tfold "Installing <coveralls>" composer_g require php-cov
 
 # ext versions
 EV_swoole1="1.10.5"
-EV_swoole4="4.3.3"
+EV_swoole4="4.4.2"
 EV_sw_async="4.3.3"
-EV_protobuf="3.8.0"
+EV_protobuf="3.9.0"
 EV_apcu="5.1.17"
-EV_ast="1.0.1"
+EV_ast="1.0.3"
 
 # swoole
 SW_VER=$([[ "$PHP_V" == "7.3" ]] && echo "$EV_swoole4" || echo "$EV_swoole1")
